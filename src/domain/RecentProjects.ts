@@ -1,30 +1,7 @@
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
 
-interface RecentProjectsResult {
-    user: {
-        recentProjects: {
-            nodes: [
-                {
-                    id: string,
-                    title: string,
-                    items: {
-                        nodes: [
-                            {
-                                id: string,
-                                content: {
-                                    title: string
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    }
-}
-
-export default class RecentProjects {
+export class RecentProjects {
     static query = `query projects($owner: String!, $projects: Int!, $items: Int!)
     {
         user(login: $owner){
@@ -68,12 +45,12 @@ export default class RecentProjects {
             },
         };
     }
-    static parse(result: RecentProjectsResult): Array<Project> {
+    static parse(result: any): Array<Project> {
         console.log(result);
-        return result.user.recentProjects.nodes.map(project => new Project(
+        return result.user.recentProjects.nodes.map((project: { id: string; title: string; items: { nodes: any[]; }; }) => new Project(
             project.id, project.title, project.items.nodes
-                .filter(item => item.content != null && item.content.title != null)
-                .map(item => {
+                .filter((item: { content: { title: null; } | null; }) => item.content != null && item.content.title != null)
+                .map((item: { id: string; content: { title: string; }; }) => {
                     return new ProjectItem(item.id, item.content.title);
                 }
                 )));

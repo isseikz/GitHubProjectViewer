@@ -1,12 +1,9 @@
+// @ts-ignore
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
-import type { GraphQlQueryResponseData } from "https://cdn.skypack.dev/@octokit/graphql";
 import type Project from "./Project";
-import RecentProjects from "./RecentProjects";
+import { RecentProjects } from "./RecentProjects";
 import { useTokenStore } from "@/stores/token";
-import type ProjectItem from "./ProjectItem";
-import AddItemRequest from "./AddItemRequest";
-
-
+import { AddItemRequest } from "./AddItemRequest";
 
 async function getRecentProjects(firstProjects: number = 10, firstItems: number = 50): Promise<Array<Project>> {
     const auth = useTokenStore().read();

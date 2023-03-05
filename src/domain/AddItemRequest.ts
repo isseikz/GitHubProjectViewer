@@ -1,18 +1,7 @@
 import type Project from "./Project";
 import ProjectItem from "./ProjectItem";
 
-interface AddItemResult {
-    addProjectV2DraftIssue: {
-        projectItem: {
-            id: string,
-            content: {
-                title: string
-            }
-        }
-    }
-}
-
-export default class AddItemRequest {
+export class AddItemRequest {
     static query = `mutation addDraft($projectId: ID!, $title: String!, $body: String)
     {
       addProjectV2DraftIssue(input: {projectId: $projectId title: $title body: $body}) {
@@ -36,9 +25,8 @@ export default class AddItemRequest {
             }
         };
     }
-    static parse(result: AddItemResult): ProjectItem {
+    static parse(result: any): ProjectItem {
         let item = result.addProjectV2DraftIssue.projectItem;
         return new ProjectItem(item.id, item.content.title);
     }
-
 }
