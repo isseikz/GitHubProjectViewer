@@ -45,7 +45,7 @@
 .project-card {
   margin: 1rem;
   width: 100%;
-  background-color: #f1f1f1;
+  background-color: var(--color-background-mute);
   border-radius: 0.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -88,7 +88,7 @@
   margin: 0.5rem;
   width: 100%;
   height: 75px;
-  background-color: #f1f1f1;
+  background-color: var(--color-background-mute);
   border-radius: 0.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0,0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
