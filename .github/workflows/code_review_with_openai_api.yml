@@ -1,0 +1,42 @@
+name: Code Review with OpenAI API
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          npm install -g @openai/cli
+
+      - name: Authenticate with OpenAI
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          openai api use $OPENAI_API_KEY
+
+      - name: Generate code review
+        id: generate-review
+        run: |
+          review=$(openai completions create \
+            --engine "text-davinci-002" \
+            --prompt "Please review this code: \n$(cat code.js)" \
+            --max-tokens 256 \
+            --n 1 \
+            --stop "\n\n" \
+            --temperature 0.7 \
+            --format text)
+          echo "::set-output name=review::$review"
+
+      - name: Comment on pull request
+        uses: machine-learning-apps/pr-comment@v1
+        with:
+          message: ${{ steps.generate-review.outputs.review }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
