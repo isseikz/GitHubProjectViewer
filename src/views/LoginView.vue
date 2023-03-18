@@ -1,12 +1,12 @@
 <template>
-    <div>
-        <form @submit.prevent="authenticate()">
+    <div style="margin: 40px; padding: 20px; font-family: sans-serif;">
+        <form @submit.prevent="authenticate()" style="display: flex; flex-direction: column;align-items: start;">
             <label for="">User Name:</label>
-            <input v-model="user" type="text">
+            <input v-model="user" type="text" style="padding: 10px; font-size: 16px; margin-top: 10px;">
             <label for="">Personal Access Token:</label>
-            <input v-model="token" type="text">
+            <input v-model="token" type="text" style="padding: 10px; font-size: 16px; margin-top: 10px;">
 
-            <button type="submit">Save</button>
+            <button type="submit" style="margin-top: 10px; padding: 10px; font-size: 16px; background-color: #007bff; color: #fff; border: none; border-radius: 4px;">Save</button>
         </form>
     </div>
 </template>

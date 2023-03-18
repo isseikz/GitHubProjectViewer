@@ -4,6 +4,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <main>
+    <h1 class="title">GitHub Projects</h1>
     <RouterView />
   </main>
 </template>
@@ -12,6 +13,11 @@ import { RouterLink, RouterView } from 'vue-router'
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+.title {
+  text-align: center;
+  margin-top: 1rem;
 }
 
 nav {

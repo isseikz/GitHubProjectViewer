@@ -20,9 +20,11 @@ jobs:
         id: get-diff-on-pull-request-
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "DIFF_FILES<<$EOF" >> $GITHUB_ENV
-          git diff origin/${GITHUB_BASE_REF}..origin/${GITHUB_HEAD_REF} -- ':(exclude).github/*' >> $GITHUB_ENV
-          echo "$EOF" >> $GITHUB_ENV
+          echo $EOF > ./diff
+          git diff origin/${GITHUB_BASE_REF}..origin/${GITHUB_HEAD_REF} -- ':(exclude).github/*' >> ./diff
+          echo $EOF >> ./diff
+          echo "DIFF_FILES=$( printf "%q" $( cat ./diff ) )" >> $GITHUB_ENV
+          echo "DIFF_BLOCK_DELIMITER=$EOF" >> $GITHUB_ENV
     
       - name: Install dependencies
         run: |
@@ -33,15 +35,21 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         id: generate-review
         run: |
-          REVIEW_EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "REVIEW<<$REVIEW_EOF" >> $GITHUB_ENV
-          echo "$( openai -k $OPENAI_API_KEY api completions.create -m text-davinci-003 -p "Please summarize this change: \n ${{ env.DIFF_FILES }}\n" --max-tokens 256 --n 1 --stop "\n\n" --temperature 0.7)" >> $GITHUB_ENV
-          echo "$REVIEW_EOF" >> $GITHUB_ENV
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64 | sed "s/\///g")
+          echo $EOF >> ./prompt
+          echo "Please review code change. Ignore the format correctness because the input is escaped.\
+            Display 'Approve.' or 'Request changes.' as a title at the first line. \
+            And at the third line, write the reason why did you choose it. \
+            Also, write a proposal patch if you request change.:\n \
+            '${{ env.DIFF_FILES }}' \n" >> ./prompt
+          echo $EOF >> ./prompt
+          review=$(openai -k $OPENAI_API_KEY api completions.create -m text-davinci-003 -p "$( cat ./prompt )" --max-tokens 1024 --n 1 --stop "\n\n" --temperature 0.7)
+          review_comment=$( echo $review | sed "s/$EOF.*$EOF//g" )
+          echo "REVIEW=$review_comment" >> $GITHUB_ENV
 
       - name: Comment on pull request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           URL: ${{ github.event.pull_request.html_url }}
-        run: 
+        run:
           gh pr comment -b "${{ env.REVIEW }}" "${{ env.URL }}"
-

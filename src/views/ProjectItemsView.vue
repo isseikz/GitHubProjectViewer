@@ -1,6 +1,5 @@
 <template>
     <div id="project-items-view">
-      <h1 class="title">GitHub Projects</h1>
       <div class="projects-list">
         <div class="project-card" v-for="project, index in projects" :key="project.id">
           <!-- <router-link :to="{ name: 'project', params: { id: project.id } }"> -->
