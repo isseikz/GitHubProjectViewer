@@ -6,7 +6,6 @@
             <label for="">Personal Access Token:</label>
             <input v-model="token" type="text" style="padding: 10px; font-size: 16px; margin-top: 10px;">
 
-            <button type="submit" style="margin-top: 10px; padding: 10px; font-size: 16px; background-color: #007bff; color: #fff; border: none; border-radius: 4px;">Save</button>
         </form>
     </div>
 </template>
