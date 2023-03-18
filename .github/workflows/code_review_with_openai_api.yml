@@ -37,10 +37,10 @@ jobs:
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64 | sed "s/\///g")
           echo $EOF >> ./prompt
-          echo "Please review code change. \
+          echo "Please review code change. Ignore the format correctness because the input is escaped.\
             Display 'Approve.' or 'Request changes.' as a title at the first line. \
             And at the third line, write the reason why did you choose it. \
-            Ignore the format correctness because the input to you is escaped.:\n \
+            Also, write a proposal patch if you request change.:\n \
             '${{ env.DIFF_FILES }}' \n" >> ./prompt
           echo $EOF >> ./prompt
           review=$(openai -k $OPENAI_API_KEY api completions.create -m text-davinci-003 -p "$( cat ./prompt )" --max-tokens 1024 --n 1 --stop "\n\n" --temperature 0.7)
